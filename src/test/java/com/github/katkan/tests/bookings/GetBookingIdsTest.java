@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class GetBookingIdsTest {
+
+    private static Stream<Arguments> provideGetByNameData() {
+        return Stream.of(
+                Arguments.of("Sally", "Brown"),
+                Arguments.of("Alex", "Parchment")
+        );
+    }
 
     @Test
     @DisplayName("Get ids for all bookings that exist")
@@ -41,11 +49,10 @@ public class GetBookingIdsTest {
         assertThat(bookingIdsSize).isEqualTo(uniqueIds);
     }
 
-
     @ParameterizedTest
     @MethodSource("provideGetByNameData")
     @DisplayName("Get booking ids based on the specific existing firstname and lastname")
-    void getBookingIdsByNameTest(String firstname, String lastname) {
+    void getBookingIdsByFirstnameAndLastnameTest(String firstname, String lastname) {
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("firstname", firstname);
@@ -67,10 +74,49 @@ public class GetBookingIdsTest {
         assertThat(getByIdJsonPath.getString("lastname")).isEqualTo(queryParams.get("lastname"));
     }
 
-    private static Stream<Arguments> provideGetByNameData() {
-        return Stream.of(
-                Arguments.of("Sally", "Brown"),
-                Arguments.of("Alex", "Parchment")
-        );
+    @ParameterizedTest
+    @ValueSource(strings = {"Sally", "Guoqiang"})
+    @DisplayName("Get booking ids based on the specific existing firstname")
+    void getBookingIdsByFirstnameTest(String firstname) {
+
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("firstname", firstname);
+
+        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
+
+        JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
+        List<Integer> bookingIds = getIdsByNameJsonPath.getList("bookingid");
+        int bookingIdsSize = bookingIds.size();
+        log.info("Number of bookingIds for {}: {}", queryParams.get("firstname"), bookingIdsSize);
+
+        Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
+        JsonPath getByIdJsonPath = getBookingById.jsonPath();
+
+        assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(bookingIds).isNotEmpty();
+        assertThat(getByIdJsonPath.getString("firstname")).isEqualTo(queryParams.get("firstname"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Parchment", "Dominguez"})
+    @DisplayName("Get booking ids based on the specific existing lastname")
+    void getBookingIdsByLastnameTest(String lastname) {
+
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("lastname", lastname);
+
+        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
+
+        JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
+        List<Integer> bookingIds = getIdsByNameJsonPath.getList("bookingid");
+        int bookingIdsSize = bookingIds.size();
+        log.info("Number of bookingIds for {}: {}", queryParams.get("lastname"), bookingIdsSize);
+
+        Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
+        JsonPath getByIdJsonPath = getBookingById.jsonPath();
+
+        assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(bookingIds).isNotEmpty();
+        assertThat(getByIdJsonPath.getString("lastname")).isEqualTo(queryParams.get("lastname"));
     }
 }
