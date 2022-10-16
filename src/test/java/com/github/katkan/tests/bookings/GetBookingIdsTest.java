@@ -1,5 +1,7 @@
 package com.github.katkan.tests.bookings;
 
+import com.github.katkan.requests.bookings.GetBookingRequest;
+import com.github.katkan.requests.bookings.GetBookingsRequest;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -25,12 +26,7 @@ public class GetBookingIdsTest {
     @DisplayName("Get ids for all bookings that exist")
     void getBookingIdsTest() {
 
-        Response response = given()
-                .when()
-                .get("https://restful-booker.herokuapp.com/booking")
-                .then()
-                .extract()
-                .response();
+        Response response = GetBookingsRequest.getBookingRequest();
 
         JsonPath jsonPath = response.jsonPath();
         List<Integer> bookingIds = jsonPath.getList("bookingid");
@@ -55,26 +51,14 @@ public class GetBookingIdsTest {
         queryParams.put("firstname", firstname);
         queryParams.put("lastname", lastname);
 
-        Response getBookingIdsResponse = given()
-                .when()
-                .queryParams(queryParams)
-                .get("https://restful-booker.herokuapp.com/booking")
-                .then()
-                .extract()
-                .response();
+        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
         JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
         List<Integer> bookingIds = getIdsByNameJsonPath.getList("bookingid");
         int bookingIdsSize = bookingIds.size();
         log.info("Number of bookingIds for {} {}: {}", queryParams.get("firstname"), queryParams.get("lastname"), bookingIdsSize);
 
-        Response getBookingById = given()
-                .when()
-                .get("https://restful-booker.herokuapp.com/booking/" + bookingIds.get(0))
-                .then()
-                .extract()
-                .response();
-
+        Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
         JsonPath getByIdJsonPath = getBookingById.jsonPath();
 
         assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
