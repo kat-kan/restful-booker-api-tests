@@ -1,5 +1,7 @@
 package com.github.katkan.tests;
 
+import com.github.katkan.url.RestfulBookerUrls;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +15,8 @@ public class HealthCheckTest {
 
         given()
                 .when()
-                .get("https://restful-booker.herokuapp.com/ping")
+                .get(RestfulBookerUrls.getHealthCheckUrl())
                 .then()
-                .statusCode(201);
+                .statusCode(HttpStatus.SC_CREATED);
     }
 }
