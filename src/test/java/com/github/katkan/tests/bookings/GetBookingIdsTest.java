@@ -7,11 +7,13 @@ import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,16 +23,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class GetBookingIdsTest {
 
+    public static final String BOOKING_ID = "bookingid";
     private static final String FIRSTNAME = "firstname";
     private static final String LASTNAME = "lastname";
     private static final String CHECKIN = "checkin";
     private static final String CHECKOUT = "checkout";
-    public static final String BOOKING_ID = "bookingid";
-
     private Map<String, String> queryParams;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         queryParams = new HashMap<>();
     }
 
@@ -67,6 +68,7 @@ public class GetBookingIdsTest {
         int bookingIdsSize = bookingIds.size();
         log.info("Number of bookingIds for firstname {}: {}", queryParams.get(FIRSTNAME), bookingIdsSize);
 
+        Collections.shuffle(bookingIds);
         Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
         JsonPath bookingJsonPath = getBookingById.jsonPath();
 
@@ -89,12 +91,60 @@ public class GetBookingIdsTest {
         int bookingIdsSize = bookingIds.size();
         log.info("Number of bookingIds for lastname {}: {}", queryParams.get(LASTNAME), bookingIdsSize);
 
+        Collections.shuffle(bookingIds);
         Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
         JsonPath bookingJsonPath = getBookingById.jsonPath();
 
         assertThat(getBookingIdsByLastnameResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotNull();
         assertThat(bookingJsonPath.getString(LASTNAME)).isEqualTo(queryParams.get(LASTNAME));
+    }
+
+    @ParameterizedTest(name = "Get ids by checkin date = {0}")
+    @ValueSource(strings = {"2020-01-01", "2013-05-03"})
+    @DisplayName("Get booking ids based on the specific existing checkin dates")
+    void getBookingIdsByCheckinTest(String checkin) {
+
+        queryParams.put(CHECKIN, checkin);
+
+        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
+
+        JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
+        List<Integer> bookingIds = getIdsByNameJsonPath.getList(BOOKING_ID);
+        int bookingIdsSize = bookingIds.size();
+        log.info("Number of bookingIds for checkin date equal or later than {}: {}", queryParams.get(CHECKIN), bookingIdsSize);
+
+        Collections.shuffle(bookingIds);
+        Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
+        JsonPath getByIdJsonPath = getBookingById.jsonPath();
+
+        assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(bookingIds).isNotNull();
+        assertThat(getByIdJsonPath.getString("bookingdates." + CHECKIN)).isGreaterThanOrEqualTo(queryParams.get(CHECKIN));
+    }
+
+    @ParameterizedTest(name = "Get ids by checkout date = {0}")
+    @Disabled("Disabled until feature is fixed, currently returns random results")
+    @ValueSource(strings = {"2022-01-01", "2018-06-01"})
+    @DisplayName("DISABLED - Get booking ids based on the specific existing checkout dates")
+    void getBookingIdsByCheckoutTest(String checkout) {
+
+        queryParams.put(CHECKOUT, checkout);
+
+        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
+
+        JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
+        List<Integer> bookingIds = getIdsByNameJsonPath.getList(BOOKING_ID);
+        int bookingIdsSize = bookingIds.size();
+        log.info("Number of bookingIds for checkout date equal or later than {}: {}", queryParams.get(CHECKOUT), bookingIdsSize);
+
+        Collections.shuffle(bookingIds);
+        Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
+        JsonPath getByIdJsonPath = getBookingById.jsonPath();
+
+        assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(bookingIds).isNotNull();
+        assertThat(getByIdJsonPath.getString("bookingdates." + CHECKOUT)).isGreaterThanOrEqualTo(queryParams.get(CHECKOUT));
     }
 
  /*   @ParameterizedTest
