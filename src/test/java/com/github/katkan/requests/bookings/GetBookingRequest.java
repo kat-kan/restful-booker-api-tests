@@ -8,7 +8,6 @@ import static io.restassured.RestAssured.given;
 public class GetBookingRequest {
 
     public static Response getBookingRequest(int bookingId){
-
         return given()
                 .when()
                 .get(RestfulBookerUrls.getBookingUrl(bookingId))
