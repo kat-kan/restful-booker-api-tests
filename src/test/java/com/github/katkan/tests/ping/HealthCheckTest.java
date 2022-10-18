@@ -1,4 +1,4 @@
-package com.github.katkan.tests;
+package com.github.katkan.tests.ping;
 
 import com.github.katkan.url.RestfulBookerUrls;
 import org.apache.http.HttpStatus;

@@ -94,7 +94,6 @@ public class GetBookingIdsTest {
         log.info("Number of bookingIds for lastname {}: {}", queryParams.get(LASTNAME), bookingIdsSize);
 
         JsonPath bookingJsonPath = getRandomBooking(bookingIds);
-
         assertThat(bookingJsonPath.getString(LASTNAME)).isEqualTo(queryParams.get(LASTNAME));
     }
 
@@ -116,7 +115,6 @@ public class GetBookingIdsTest {
         log.info("Number of bookingIds for checkin date equal or later than {}: {}", queryParams.get(CHECKIN), bookingIdsSize);
 
         JsonPath bookingJsonPath = getRandomBooking(bookingIds);
-
         assertThat(bookingJsonPath.getString("bookingdates." + CHECKIN)).isGreaterThanOrEqualTo(queryParams.get(CHECKIN));
     }
 
@@ -139,7 +137,6 @@ public class GetBookingIdsTest {
         log.info("Number of bookingIds for checkout date equal or later than {}: {}", queryParams.get(CHECKOUT), bookingIdsSize);
 
         JsonPath bookingJsonPath = getRandomBooking(bookingIds);
-
         assertThat(bookingJsonPath.getString("bookingdates." + CHECKOUT)).isGreaterThanOrEqualTo(queryParams.get(CHECKOUT));
     }
 
