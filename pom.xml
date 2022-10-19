@@ -21,6 +21,7 @@
         <junit-jupiter-params.version>5.9.1</junit-jupiter-params.version>
         <junit-jupiter-engine.version>5.9.1</junit-jupiter-engine.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
+        <json.version>20220924</json.version>
     </properties>
 
     <dependencies>
@@ -77,6 +78,12 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit-jupiter-engine.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
         </dependency>
     </dependencies>
 
