@@ -10,3 +10,17 @@ Collection of API tests for Restful-Booker
 App links : [Restful -Booker](https://restful-booker.herokuapp.com/),  [Restful-Booker API Docs](https://restful-booker.herokuapp.com/apidoc/index.html)
 
 Restful-Booker is Web API playground created by Mark Winteringham. It offers authentication, CRUD operations and is loaded with bugs (for the purpose of learning). 
+
+## Issues found
+
+As mentioned, Restful Booker API has some bugs for the fun of its testers. Here are the ones that I found:
+
+`https://restful-booker.herokuapp.com/booking` - Get Booking Ids
+* Filtering by checkout date does not work: returns random results instead of bookings with greater or equal checkout date. For that reason, I had to use @Disabled for test with checkout dates
+
+`https://restful-booker.herokuapp.com/booking` - Create Booking
+* Total price value cannot be a floating number; precision is lost during saving.
+* Checkin and checkout dates are validated, but 200 OK status code is returned; 400 BAD REQUEST would be better
+
+`https://restful-booker.herokuapp.com/booking/1` - Delete Booking
+* Auth can be set only via Cookie header, doesn't work with Authorization header (returns 403 FORBIDDEN)
