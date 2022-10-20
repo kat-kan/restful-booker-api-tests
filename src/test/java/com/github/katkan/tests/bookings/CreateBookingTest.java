@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
-import static com.github.katkan.json.JsonHelper.*;
+import static com.github.katkan.helpers.JsonHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreateBookingTest {
