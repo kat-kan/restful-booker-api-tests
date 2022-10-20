@@ -1,4 +1,4 @@
-package com.github.katkan.json;
+package com.github.katkan.helpers;
 
 public class JsonHelper {
     public static final String FIRSTNAME = "firstname";
@@ -11,6 +11,7 @@ public class JsonHelper {
     public static final String BOOKING_DATES = "bookingdates";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String ID = "bookingid";
 
     private JsonHelper(){}
 }

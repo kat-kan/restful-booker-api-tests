@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
+import static com.github.katkan.helpers.JsonHelper.ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -19,8 +20,6 @@ public class GetBookingTest {
 
     private static final List<String> keys = List.of("firstname", "lastname",
             "totalprice", "depositpaid", "bookingdates.checkin", "bookingdates.checkout", "additionalneeds");
-
-    private static final String BOOKING_ID = "bookingid";
 
     @Test
     @DisplayName("Get booking based on the existing id")
@@ -61,6 +60,6 @@ public class GetBookingTest {
     private List<Integer> getBookingIds() {
         Response getBookingIdsResponse = GetBookingsRequest.getBookingRequest();
         JsonPath jsonPath = getBookingIdsResponse.jsonPath();
-        return jsonPath.getList(BOOKING_ID);
+        return jsonPath.getList(ID);
     }
 }
