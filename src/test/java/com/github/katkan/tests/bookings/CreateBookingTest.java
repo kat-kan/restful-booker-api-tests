@@ -27,8 +27,8 @@ public class CreateBookingTest {
 
     private String firstname = "John";
     private String lastname = "Kowalsky";
-    private String totalPrice = "10150";
-    private String depositPaid = "true";
+    private Integer totalPrice = 10150;
+    private boolean depositPaid = true;
     private String checkin = "2023-01-01";
     private String checkout = "2023-02-01";
     private String additionalNeeds = "Lunch";
@@ -118,9 +118,9 @@ public class CreateBookingTest {
         }
 
         @ParameterizedTest(name = "Create booking with total price = {0}")
-        @ValueSource(strings = {"500", "1000000", "0", "999"})
+        @ValueSource(ints = {500, 1000000, 0, 999})
         @DisplayName("Create booking with different valid total prices")
-        void createBookingWithDifferentTotalPricesTest(String totalPrice) {
+        void createBookingWithDifferentTotalPricesTest(Integer totalPrice) {
             CreateBookingTest.this.totalPrice = totalPrice;
             JSONObject booking = getBookingJsonObject();
 
@@ -135,11 +135,10 @@ public class CreateBookingTest {
             verifyGetResponseContainsCorrectData(getBooking);
         }
 
-        @Disabled("Disabled until feature is fixed - currently always set to true")
         @Test
         @DisplayName("Create booking with deposit paid set to false")
         void createBookingWithDepositUnpaidTest() {
-            CreateBookingTest.this.depositPaid = "false";
+            CreateBookingTest.this.depositPaid = false;
             JSONObject booking = getBookingJsonObject();
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
@@ -230,8 +229,8 @@ public class CreateBookingTest {
     private void verifyCreateResponseContainsCorrectData(JsonPath jsonPath) {
         assertThat(jsonPath.getString(BOOKING + FIRSTNAME)).isEqualTo(firstname);
         assertThat(jsonPath.getString(BOOKING + LASTNAME)).isEqualTo(lastname);
-        assertThat(jsonPath.getString(BOOKING + TOTAL_PRICE)).isEqualTo(totalPrice);
-        assertThat(jsonPath.getString(BOOKING + DEPOSIT_PAID)).isEqualTo(depositPaid);
+        assertThat(jsonPath.getInt(BOOKING + TOTAL_PRICE)).isEqualTo(totalPrice);
+        assertThat(jsonPath.getBoolean(BOOKING + DEPOSIT_PAID)).isEqualTo(depositPaid);
         assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKIN)).isEqualTo(checkin);
         assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKOUT)).isEqualTo(checkout);
         assertThat(jsonPath.getString(BOOKING + ADDITIONAL_NEEDS)).isEqualTo(additionalNeeds);
@@ -240,8 +239,8 @@ public class CreateBookingTest {
     private void verifyGetResponseContainsCorrectData(JsonPath jsonPath) {
         assertThat(jsonPath.getString(FIRSTNAME)).isEqualTo(firstname);
         assertThat(jsonPath.getString(LASTNAME)).isEqualTo(lastname);
-        assertThat(jsonPath.getString(TOTAL_PRICE)).isEqualTo(totalPrice);
-        assertThat(jsonPath.getString(DEPOSIT_PAID)).isEqualTo(depositPaid);
+        assertThat(jsonPath.getInt(TOTAL_PRICE)).isEqualTo(totalPrice);
+        assertThat(jsonPath.getBoolean(DEPOSIT_PAID)).isEqualTo(depositPaid);
         assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKIN)).isEqualTo(checkin);
         assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(checkout);
         assertThat(jsonPath.getString(ADDITIONAL_NEEDS)).isEqualTo(additionalNeeds);
