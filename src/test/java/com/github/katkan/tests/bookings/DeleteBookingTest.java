@@ -67,7 +67,7 @@ public class DeleteBookingTest {
         booking.put(FIRSTNAME, "Barbra");
         booking.put(LASTNAME, "Levis");
         booking.put(TOTAL_PRICE, "50000");
-        booking.put(DEPOSIT_PAID, "true");
+        booking.put(DEPOSIT_PAID, true);
         booking.put(BOOKING_DATES, bookingDates);
         booking.put(ADDITIONAL_NEEDS, "Sleep mask in the room");
         return booking;
