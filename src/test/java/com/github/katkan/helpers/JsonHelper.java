@@ -13,5 +13,8 @@ public class JsonHelper {
     public static final String PASSWORD = "password";
     public static final String ID = "bookingid";
 
+    public static final String BOOKING = "booking.";
+    public static final String BOOKING_BOOKING_DATES = "booking.bookingdates.";
+
     private JsonHelper(){}
 }
