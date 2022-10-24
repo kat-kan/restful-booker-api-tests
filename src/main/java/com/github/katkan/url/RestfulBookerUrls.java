@@ -19,10 +19,6 @@ public class RestfulBookerUrls {
         return getBookingsUrl() + "/" + bookingId;
     }
 
-    public static String deleteBookingUrl(int bookingId){
-        return BASE_URL + BOOKING + "/" + bookingId;
-    }
-
     public static String getHealthCheckUrl(){
         return BASE_URL + PING;
     }

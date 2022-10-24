@@ -198,17 +198,12 @@ public class CreateBookingTest {
                     Arguments.of("2024-03-20", "2024-03-20")
             );
         }
-
     }
 
     private JsonPath getCreatedBookingJsonPath(JsonPath jsonPath) {
         int bookingId = getBookingId(jsonPath);
         Response getCreatedBookingResponse = GetBookingRequest.getBookingRequest(bookingId);
         return getCreatedBookingResponse.jsonPath();
-    }
-
-    private int getBookingId(JsonPath jsonPath) {
-        return Integer.parseInt(jsonPath.getString("bookingid"));
     }
 
     private JSONObject getBookingJsonObject() {

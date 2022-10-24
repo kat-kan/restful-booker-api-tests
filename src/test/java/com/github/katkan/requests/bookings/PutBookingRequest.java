@@ -8,25 +8,27 @@ import org.json.JSONObject;
 
 import static io.restassured.RestAssured.given;
 
-public class CreateBookingRequest {
+public class PutBookingRequest {
 
-    public static Response createBookingRequest(JSONObject booking){
+    public static Response putBookingRequest(JSONObject booking, int bookingId, String token){
         return given()
                 .contentType(ContentType.JSON)
+                .header("Cookie", "token=" + token)
                 .body(booking.toString())
                 .when()
-                .post(RestfulBookerUrls.createBookingUrl())
+                .put(RestfulBookerUrls.getBookingUrl(bookingId))
                 .then()
                 .extract()
                 .response();
     }
 
-    public static Response createBookingRequest(BookingRequestDto bookingRequestDto){
+    public static Response putBookingRequest(BookingRequestDto bookingDto, int bookingId, String token){
         return given()
                 .contentType(ContentType.JSON)
-                .body(bookingRequestDto)
+                .header("Cookie", "token=" + token)
+                .body(bookingDto)
                 .when()
-                .post(RestfulBookerUrls.createBookingUrl())
+                .put(RestfulBookerUrls.getBookingUrl(bookingId))
                 .then()
                 .extract()
                 .response();
