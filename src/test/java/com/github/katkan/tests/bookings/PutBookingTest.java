@@ -63,7 +63,7 @@ public class PutBookingTest {
         putBookingDto.setLastname(updatedLastname);
         putBookingDto.setTotalPrice(updatedTotalPrice);
         putBookingDto.setDepositPaid(updatedDepositPaid);
-        putBookingDto.setBookingDatesRequestDto(putBookingDatesDto);
+        putBookingDto.setBookingDates(putBookingDatesDto);
         putBookingDto.setAdditionalNeeds(updatedAdditionalNeeds);
 
         Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
@@ -95,7 +95,7 @@ public class PutBookingTest {
         putBookingDto.setLastname(updatedLastname);
         putBookingDto.setTotalPrice(updatedTotalPrice);
         putBookingDto.setDepositPaid(updatedDepositPaid);
-        putBookingDto.setBookingDatesRequestDto(putBookingDatesDto);
+        putBookingDto.setBookingDates(putBookingDatesDto);
         putBookingDto.setAdditionalNeeds(updatedAdditionalNeeds);
 
         Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
@@ -111,8 +111,8 @@ public class PutBookingTest {
         assertThat(jsonPath.getString(LASTNAME)).isEqualTo(bookingDto.getLastname());
         assertThat(jsonPath.getInt(TOTAL_PRICE)).isEqualTo(bookingDto.getTotalPrice());
         assertThat(jsonPath.getBoolean(DEPOSIT_PAID)).isEqualTo(bookingDto.isDepositPaid());
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKIN)).isEqualTo(bookingDto.getBookingDatesRequestDto().getCheckin());
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(bookingDto.getBookingDatesRequestDto().getCheckout());
+        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKIN)).isEqualTo(bookingDto.getBookingDates().getCheckin());
+        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(bookingDto.getBookingDates().getCheckout());
         assertThat(jsonPath.getString(ADDITIONAL_NEEDS)).isEqualTo(bookingDto.getAdditionalNeeds());
     }
 
