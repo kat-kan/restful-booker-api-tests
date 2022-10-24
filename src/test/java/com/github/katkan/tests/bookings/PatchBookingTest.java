@@ -179,8 +179,4 @@ public class PatchBookingTest {
         assertThat(patchBookingResponse.jsonPath().getString(FIRSTNAME)).isEqualTo(updatedFirstname);
         assertThat(patchBookingResponse.jsonPath().getString(ADDITIONAL_NEEDS)).isEqualTo(updatedAdditionalNeeds);
     }
-
-    private int getBookingId(JsonPath jsonPath) {
-        return Integer.parseInt(jsonPath.getString(ID));
-    }
 }

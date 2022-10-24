@@ -115,8 +115,4 @@ public class PutBookingTest {
         assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(bookingDto.getBookingDates().getCheckout());
         assertThat(jsonPath.getString(ADDITIONAL_NEEDS)).isEqualTo(bookingDto.getAdditionalNeeds());
     }
-
-    private int getBookingId(JsonPath jsonPath) {
-        return Integer.parseInt(jsonPath.getString(ID));
-    }
 }
