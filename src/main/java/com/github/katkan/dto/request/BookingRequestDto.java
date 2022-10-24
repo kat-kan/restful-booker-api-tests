@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class PutBookingRequestDto {
+public class BookingRequestDto {
     private String firstname = "John";
     private String lastname = "Kowalsky";
     @JsonProperty("totalprice")
@@ -12,7 +12,7 @@ public class PutBookingRequestDto {
     @JsonProperty("depositpaid")
     private boolean depositPaid = true;
     @JsonProperty("bookingdates")
-    private PutBookingDatesRequestDto putBookingDatesRequestDto;
+    private BookingDatesRequestDto bookingDatesRequestDto = new BookingDatesRequestDto();
     @JsonProperty("additionalneeds")
     private String additionalNeeds = "Lunch";
 }

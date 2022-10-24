@@ -1,5 +1,6 @@
 package com.github.katkan.requests.bookings;
 
+import com.github.katkan.dto.request.BookingRequestDto;
 import com.github.katkan.url.RestfulBookerUrls;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -13,6 +14,17 @@ public class CreateBookingRequest {
         return given()
                 .contentType(ContentType.JSON)
                 .body(booking.toString())
+                .when()
+                .post(RestfulBookerUrls.createBookingUrl())
+                .then()
+                .extract()
+                .response();
+    }
+
+    public static Response createBookingRequest(BookingRequestDto bookingRequestDto){
+        return given()
+                .contentType(ContentType.JSON)
+                .body(bookingRequestDto)
                 .when()
                 .post(RestfulBookerUrls.createBookingUrl())
                 .then()

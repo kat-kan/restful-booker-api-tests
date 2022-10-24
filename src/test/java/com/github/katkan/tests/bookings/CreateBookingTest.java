@@ -208,7 +208,7 @@ public class CreateBookingTest {
     }
 
     private int getBookingId(JsonPath jsonPath) {
-        return Integer.parseInt(jsonPath.getString("bookingid"));
+        return Integer.parseInt(jsonPath.getString(ID));
     }
 
     private JSONObject getBookingJsonObject() {
