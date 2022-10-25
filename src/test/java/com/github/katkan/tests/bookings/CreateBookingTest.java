@@ -27,7 +27,7 @@ public class CreateBookingTest {
 
     private String firstname = "John";
     private String lastname = "Kowalsky";
-    private Integer totalPrice = 10150;
+    private int totalPrice = 10150;
     private boolean depositPaid = true;
     private String checkin = "2023-01-01";
     private String checkout = "2023-02-01";

@@ -18,6 +18,8 @@ public class JsonHelper {
     public static final String BOOKING = "booking.";
     public static final String BOOKING_BOOKING_DATES = "booking.bookingdates.";
 
+    public static final String TOKEN = "token";
+
     public static int getBookingId(JsonPath jsonPath) {
         return Integer.parseInt(jsonPath.getString(ID));
     }
