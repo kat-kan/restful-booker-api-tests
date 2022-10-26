@@ -18,16 +18,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static com.github.katkan.helpers.JsonHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class GetBookingIdsTest {
 
-    private static final String BOOKING_ID = "bookingid";
-    private static final String FIRSTNAME = "firstname";
-    private static final String LASTNAME = "lastname";
-    private static final String CHECKIN = "checkin";
-    private static final String CHECKOUT = "checkout";
     private Map<String, String> queryParams;
 
     @BeforeEach
@@ -41,7 +37,7 @@ public class GetBookingIdsTest {
         Response response = GetBookingsRequest.getBookingRequest();
 
         JsonPath jsonPath = response.jsonPath();
-        List<Integer> bookingIds = jsonPath.getList(BOOKING_ID);
+        List<Integer> bookingIds = jsonPath.getList(ID);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
@@ -64,7 +60,7 @@ public class GetBookingIdsTest {
         Response getBookingIdsByFirstnameResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
         JsonPath getIdsByNameJsonPath = getBookingIdsByFirstnameResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByNameJsonPath.getList(BOOKING_ID);
+        List<Integer> bookingIds = getIdsByNameJsonPath.getList(ID);
 
         assertThat(getBookingIdsByFirstnameResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
@@ -85,7 +81,7 @@ public class GetBookingIdsTest {
         Response getBookingIdsByLastnameResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
         JsonPath bookingIdsJsonPath = getBookingIdsByLastnameResponse.jsonPath();
-        List<Integer> bookingIds = bookingIdsJsonPath.getList(BOOKING_ID);
+        List<Integer> bookingIds = bookingIdsJsonPath.getList(ID);
 
         assertThat(getBookingIdsByLastnameResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
@@ -106,7 +102,7 @@ public class GetBookingIdsTest {
         Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
         JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByNameJsonPath.getList(BOOKING_ID);
+        List<Integer> bookingIds = getIdsByNameJsonPath.getList(ID);
 
         assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
@@ -128,7 +124,7 @@ public class GetBookingIdsTest {
         Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
         JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByNameJsonPath.getList(BOOKING_ID);
+        List<Integer> bookingIds = getIdsByNameJsonPath.getList(ID);
 
         assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
@@ -147,7 +143,7 @@ public class GetBookingIdsTest {
         Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
         JsonPath getIdsByQueryParamsJsonPath = getBookingIdsResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByQueryParamsJsonPath.getList(BOOKING_ID);
+        List<Integer> bookingIds = getIdsByQueryParamsJsonPath.getList(ID);
 
         assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();

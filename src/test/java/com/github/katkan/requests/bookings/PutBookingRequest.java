@@ -1,6 +1,6 @@
 package com.github.katkan.requests.bookings;
 
-import com.github.katkan.dto.request.BookingRequestDto;
+import com.github.katkan.dto.request.BookingDto;
 import com.github.katkan.url.RestfulBookerUrls;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -22,7 +22,7 @@ public class PutBookingRequest {
                 .response();
     }
 
-    public static Response putBookingRequest(BookingRequestDto bookingDto, int bookingId, String token){
+    public static Response putBookingRequest(BookingDto bookingDto, int bookingId, String token){
         return given()
                 .contentType(ContentType.JSON)
                 .header("Cookie", "token=" + token)

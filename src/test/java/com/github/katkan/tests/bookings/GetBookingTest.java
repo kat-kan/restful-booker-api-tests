@@ -13,13 +13,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.github.katkan.helpers.JsonHelper.ID;
+import static com.github.katkan.helpers.JsonHelper.jsonKeys;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class GetBookingTest {
-
-    private static final List<String> keys = List.of("firstname", "lastname",
-            "totalprice", "depositpaid", "bookingdates.checkin", "bookingdates.checkout", "additionalneeds");
 
     @Test
     @DisplayName("Get booking based on the existing id")
@@ -27,10 +24,9 @@ public class GetBookingTest {
         int existingId = getExistingId();
         Response response = GetBookingRequest.getBookingRequest(existingId);
         JsonPath jsonPath = response.jsonPath();
-        log.info("Got booking with id {} ", existingId);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
-        for (String key: keys) {
+        for (String key: jsonKeys) {
             assertThat(jsonPath.getString(key)).isNotEmpty();
         }
     }
@@ -40,7 +36,6 @@ public class GetBookingTest {
     void getNonExistingBookingTest() {
         int nonExistingId = getNonExistingId();
         Response response = GetBookingRequest.getBookingRequest(nonExistingId);
-        log.info("Tried to get booking with id {}", nonExistingId);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
     }
