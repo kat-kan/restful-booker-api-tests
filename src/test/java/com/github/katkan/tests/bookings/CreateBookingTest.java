@@ -1,5 +1,7 @@
 package com.github.katkan.tests.bookings;
 
+import com.github.katkan.dto.request.BookingDatesDto;
+import com.github.katkan.dto.request.BookingDto;
 import com.github.katkan.properties.RestfulBookerProperties;
 import com.github.katkan.requests.auth.CreateTokenRequest;
 import com.github.katkan.requests.bookings.CreateBookingRequest;
@@ -18,29 +20,23 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.stream.Stream;
 
 import static com.github.katkan.helpers.JsonHelper.*;
+import static com.github.katkan.helpers.ValidationHelper.verifyCreateResponseContainsCorrectData;
+import static com.github.katkan.helpers.ValidationHelper.verifyResponseContainsCorrectData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreateBookingTest {
 
-    private static final String BOOKING = "booking.";
-    private static final String BOOKING_BOOKING_DATES = "booking.bookingdates.";
-
-    private String firstname = "John";
-    private String lastname = "Kowalsky";
-    private int totalPrice = 10150;
-    private boolean depositPaid = true;
-    private String checkin = "2023-01-01";
-    private String checkout = "2023-02-01";
-    private String additionalNeeds = "Lunch";
-
     @Test
     @DisplayName("Create booking with invalid dates (the only validation implemented)")
     void createBookingWithInvalidDatesTest() {
-        this.checkin = "20221012";
-        this.checkout = "202210-12";
-        JSONObject booking = getBookingJsonObject();
+        BookingDto booking = new BookingDto();
+        BookingDatesDto bookingDates = new BookingDatesDto();
+        bookingDates.setCheckin("20221012");
+        bookingDates.setCheckout("202210-12");
+        booking.setBookingDates(bookingDates);
 
         Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+
         assertThat(createBookingResponse.htmlPath().getString("body")).isEqualTo("Invalid date");
     }
 
@@ -68,106 +64,108 @@ public class CreateBookingTest {
         @Test
         @DisplayName("Create booking with valid data")
         void createBookingWithValidDataTest() {
-            JSONObject booking = getBookingJsonObject();
+            BookingDto booking = new BookingDto();
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
             JsonPath jsonPath = createBookingResponse.jsonPath();
             bookingId = getBookingId(jsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath);
+            verifyCreateResponseContainsCorrectData(jsonPath, booking);
 
             JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
-            verifyGetResponseContainsCorrectData(getBooking);
+            verifyResponseContainsCorrectData(getBooking, booking);
         }
 
         @ParameterizedTest(name = "Create booking with firstname = {0}")
         @ValueSource(strings = {"Yu", "Gżegżółka", "Mrs.Kate", "Rhoshandiatellyneshiaunneveshenk"})
         @DisplayName("Create booking with different valid firstnames")
         void createBookingWithDifferentNamesTest(String firstname) {
-            CreateBookingTest.this.firstname = firstname;
-            JSONObject booking = getBookingJsonObject();
+            BookingDto booking = new BookingDto();
+            booking.setFirstname(firstname);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
             JsonPath jsonPath = createBookingResponse.jsonPath();
             bookingId = getBookingId(jsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath);
+            verifyCreateResponseContainsCorrectData(jsonPath, booking);
 
             JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
-            verifyGetResponseContainsCorrectData(getBooking);
+            verifyResponseContainsCorrectData(getBooking,booking);
         }
 
         @ParameterizedTest(name = "Create booking with lastname = {0}")
         @ValueSource(strings = {"Yu", "Brzęczyszczykiewicz", "Davis", "SMITH"})
         @DisplayName("Create booking with different valid lastnames")
         void createBookingWithDifferentLastnamesTest(String lastname) {
-            CreateBookingTest.this.lastname = lastname;
-            JSONObject booking = getBookingJsonObject();
+            BookingDto booking = new BookingDto();
+            booking.setFirstname(lastname);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
             JsonPath jsonPath = createBookingResponse.jsonPath();
             bookingId = getBookingId(jsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath);
+            verifyCreateResponseContainsCorrectData(jsonPath, booking);
 
             JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
-            verifyGetResponseContainsCorrectData(getBooking);
+            verifyResponseContainsCorrectData(getBooking, booking);
         }
 
         @ParameterizedTest(name = "Create booking with total price = {0}")
         @ValueSource(ints = {500, 1000000, 0, 999})
         @DisplayName("Create booking with different valid total prices")
         void createBookingWithDifferentTotalPricesTest(Integer totalPrice) {
-            CreateBookingTest.this.totalPrice = totalPrice;
-            JSONObject booking = getBookingJsonObject();
+            BookingDto booking = new BookingDto();
+            booking.setTotalPrice(totalPrice);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
             JsonPath jsonPath = createBookingResponse.jsonPath();
             bookingId = getBookingId(jsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath);
+            verifyCreateResponseContainsCorrectData(jsonPath, booking);
 
             JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
-            verifyGetResponseContainsCorrectData(getBooking);
+            verifyResponseContainsCorrectData(getBooking, booking);
         }
 
         @Test
         @DisplayName("Create booking with deposit paid set to false")
         void createBookingWithDepositUnpaidTest() {
-            CreateBookingTest.this.depositPaid = false;
-            JSONObject booking = getBookingJsonObject();
+            BookingDto booking = new BookingDto();
+            booking.setDepositPaid(false);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
             JsonPath jsonPath = createBookingResponse.jsonPath();
             bookingId = getBookingId(jsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath);
+            verifyCreateResponseContainsCorrectData(jsonPath, booking);
 
             JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
-            verifyGetResponseContainsCorrectData(getBooking);
+            verifyResponseContainsCorrectData(getBooking, booking);
         }
 
         @ParameterizedTest(name = "Create booking with checkin = {0} and checkout = {1}")
         @MethodSource("provideBookingDatesData")
         void createBookingWithDifferentBookingDatesTest(String checkin, String checkout) {
-            CreateBookingTest.this.checkin = checkin;
-            CreateBookingTest.this.checkout = checkout;
-            JSONObject booking = getBookingJsonObject();
+            BookingDto booking = new BookingDto();
+            BookingDatesDto bookingDates = new BookingDatesDto();
+            bookingDates.setCheckin(checkin);
+            bookingDates.setCheckout(checkout);
+            booking.setBookingDates(bookingDates);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
             JsonPath jsonPath = createBookingResponse.jsonPath();
             bookingId = getBookingId(jsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath);
+            verifyCreateResponseContainsCorrectData(jsonPath, booking);
 
             JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
-            verifyGetResponseContainsCorrectData(getBooking);
+            verifyResponseContainsCorrectData(getBooking, booking);
         }
 
         @ParameterizedTest(name = "Create booking with additional needs = {0}")
@@ -177,18 +175,18 @@ public class CreateBookingTest {
                 "Call the office 777-555-222 and inform after arrival. Please also arrange breakfast and lunch."})
         @DisplayName("Create booking with different valid additional needs")
         void createBookingWithDifferentAdditionalNeedsTest(String additionalNeeds) {
-            CreateBookingTest.this.additionalNeeds = additionalNeeds;
-            JSONObject booking = getBookingJsonObject();
+            BookingDto booking = new BookingDto();
+            booking.setAdditionalNeeds(additionalNeeds);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
             JsonPath jsonPath = createBookingResponse.jsonPath();
             bookingId = getBookingId(jsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath);
+            verifyCreateResponseContainsCorrectData(jsonPath, booking);
 
             JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
-            verifyGetResponseContainsCorrectData(getBooking);
+            verifyResponseContainsCorrectData(getBooking, booking);
         }
 
         private static Stream<Arguments> provideBookingDatesData() {
@@ -204,40 +202,5 @@ public class CreateBookingTest {
         int bookingId = getBookingId(jsonPath);
         Response getCreatedBookingResponse = GetBookingRequest.getBookingRequest(bookingId);
         return getCreatedBookingResponse.jsonPath();
-    }
-
-    private JSONObject getBookingJsonObject() {
-        JSONObject bookingDates = new JSONObject();
-        bookingDates.put(CHECKIN, checkin);
-        bookingDates.put(CHECKOUT, checkout);
-
-        JSONObject booking = new JSONObject();
-        booking.put(FIRSTNAME, firstname);
-        booking.put(LASTNAME, lastname);
-        booking.put(TOTAL_PRICE, totalPrice);
-        booking.put(DEPOSIT_PAID, depositPaid);
-        booking.put(BOOKING_DATES, bookingDates);
-        booking.put(ADDITIONAL_NEEDS, additionalNeeds);
-        return booking;
-    }
-
-    private void verifyCreateResponseContainsCorrectData(JsonPath jsonPath) {
-        assertThat(jsonPath.getString(BOOKING + FIRSTNAME)).isEqualTo(firstname);
-        assertThat(jsonPath.getString(BOOKING + LASTNAME)).isEqualTo(lastname);
-        assertThat(jsonPath.getInt(BOOKING + TOTAL_PRICE)).isEqualTo(totalPrice);
-        assertThat(jsonPath.getBoolean(BOOKING + DEPOSIT_PAID)).isEqualTo(depositPaid);
-        assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKIN)).isEqualTo(checkin);
-        assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKOUT)).isEqualTo(checkout);
-        assertThat(jsonPath.getString(BOOKING + ADDITIONAL_NEEDS)).isEqualTo(additionalNeeds);
-    }
-
-    private void verifyGetResponseContainsCorrectData(JsonPath jsonPath) {
-        assertThat(jsonPath.getString(FIRSTNAME)).isEqualTo(firstname);
-        assertThat(jsonPath.getString(LASTNAME)).isEqualTo(lastname);
-        assertThat(jsonPath.getInt(TOTAL_PRICE)).isEqualTo(totalPrice);
-        assertThat(jsonPath.getBoolean(DEPOSIT_PAID)).isEqualTo(depositPaid);
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKIN)).isEqualTo(checkin);
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(checkout);
-        assertThat(jsonPath.getString(ADDITIONAL_NEEDS)).isEqualTo(additionalNeeds);
     }
 }

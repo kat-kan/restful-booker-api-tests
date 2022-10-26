@@ -1,7 +1,7 @@
 package com.github.katkan.tests.bookings;
 
-import com.github.katkan.dto.request.BookingDatesRequestDto;
-import com.github.katkan.dto.request.BookingRequestDto;
+import com.github.katkan.dto.request.BookingDatesDto;
+import com.github.katkan.dto.request.BookingDto;
 import com.github.katkan.properties.RestfulBookerProperties;
 import com.github.katkan.requests.auth.CreateTokenRequest;
 import com.github.katkan.requests.bookings.CreateBookingRequest;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.github.katkan.helpers.JsonHelper.*;
+import static com.github.katkan.helpers.ValidationHelper.verifyResponseContainsCorrectData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PutBookingTest {
@@ -24,7 +25,7 @@ public class PutBookingTest {
     private static String token;
     private static int bookingId;
 
-    private BookingRequestDto createBookingDto;
+    private BookingDto createBookingDto;
 
     @BeforeEach
     void setUp() {
@@ -34,13 +35,13 @@ public class PutBookingTest {
         Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);
         token = createTokenResponse.jsonPath().getString("token");
 
-        createBookingDto = new BookingRequestDto();
+        createBookingDto = new BookingDto();
     }
 
     @AfterEach
     void deleteBooking() {
         Response response = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
-        assertThat(response.statusCode()).isEqualTo(201);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
     }
 
     @Test
@@ -54,8 +55,8 @@ public class PutBookingTest {
         String updatedCheckout = "2023-11-01";
         String updatedAdditionalNeeds = "Breakfast";
 
-        BookingDatesRequestDto putBookingDatesDto = new BookingDatesRequestDto();
-        BookingRequestDto putBookingDto  = new BookingRequestDto();
+        BookingDatesDto putBookingDatesDto = new BookingDatesDto();
+        BookingDto putBookingDto  = new BookingDto();
 
         putBookingDatesDto.setCheckin(updatedCheckin);
         putBookingDatesDto.setCheckout(updatedCheckout);
@@ -72,7 +73,7 @@ public class PutBookingTest {
 
         Response putBookingResponse = PutBookingRequest.putBookingRequest(putBookingDto, bookingId, token);
         assertThat(putBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
-        verifyPutResponseContainsCorrectData(putBookingResponse.jsonPath(), putBookingDto);
+        verifyResponseContainsCorrectData(putBookingResponse.jsonPath(), putBookingDto);
     }
 
     @Test
@@ -86,8 +87,8 @@ public class PutBookingTest {
         String updatedCheckout = "2023-1101";
         String updatedAdditionalNeeds = "Breakfast";
 
-        BookingDatesRequestDto putBookingDatesDto = new BookingDatesRequestDto();
-        BookingRequestDto putBookingDto  = new BookingRequestDto();
+        BookingDatesDto putBookingDatesDto = new BookingDatesDto();
+        BookingDto putBookingDto  = new BookingDto();
 
         putBookingDatesDto.setCheckin(updatedCheckin);
         putBookingDatesDto.setCheckout(updatedCheckout);
@@ -104,15 +105,5 @@ public class PutBookingTest {
 
         Response putBookingResponse = PutBookingRequest.putBookingRequest(putBookingDto, bookingId, token);
         assertThat(putBookingResponse.htmlPath().getString("body")).isEqualTo("Invalid date");
-    }
-
-    private void verifyPutResponseContainsCorrectData(JsonPath jsonPath, BookingRequestDto bookingDto) {
-        assertThat(jsonPath.getString(FIRSTNAME)).isEqualTo(bookingDto.getFirstname());
-        assertThat(jsonPath.getString(LASTNAME)).isEqualTo(bookingDto.getLastname());
-        assertThat(jsonPath.getInt(TOTAL_PRICE)).isEqualTo(bookingDto.getTotalPrice());
-        assertThat(jsonPath.getBoolean(DEPOSIT_PAID)).isEqualTo(bookingDto.isDepositPaid());
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKIN)).isEqualTo(bookingDto.getBookingDates().getCheckin());
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(bookingDto.getBookingDates().getCheckout());
-        assertThat(jsonPath.getString(ADDITIONAL_NEEDS)).isEqualTo(bookingDto.getAdditionalNeeds());
     }
 }

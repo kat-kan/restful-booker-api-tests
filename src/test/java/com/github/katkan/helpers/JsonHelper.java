@@ -1,7 +1,12 @@
 package com.github.katkan.helpers;
 
 import io.restassured.path.json.JsonPath;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonHelper {
     public static final String FIRSTNAME = "firstname";
     public static final String LASTNAME = "lastname";
@@ -20,9 +25,10 @@ public class JsonHelper {
 
     public static final String TOKEN = "token";
 
+    public static final List<String> jsonKeys = List.of(FIRSTNAME, LASTNAME,
+            TOTAL_PRICE, DEPOSIT_PAID, BOOKING_DATES + "." + CHECKIN, BOOKING_DATES + "." + CHECKOUT, ADDITIONAL_NEEDS);
+
     public static int getBookingId(JsonPath jsonPath) {
         return Integer.parseInt(jsonPath.getString(ID));
     }
-
-    private JsonHelper(){}
 }

@@ -1,7 +1,8 @@
 package com.github.katkan.tests.e2e;
 
-import com.github.katkan.dto.request.BookingDatesRequestDto;
-import com.github.katkan.dto.request.BookingRequestDto;
+import com.github.katkan.dto.request.BookingDatesDto;
+import com.github.katkan.dto.request.BookingDto;
+import com.github.katkan.helpers.ValidationHelper;
 import com.github.katkan.properties.RestfulBookerProperties;
 import com.github.katkan.requests.auth.CreateTokenRequest;
 import com.github.katkan.requests.bookings.CreateBookingRequest;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 
 import static com.github.katkan.helpers.JsonHelper.*;
+import static com.github.katkan.helpers.ValidationHelper.verifyResponseContainsCorrectData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -23,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UpdateBookingE2ETest {
     private static String token;
     private static int bookingId;
+    private static BookingDto booking;
+    private static BookingDatesDto bookingDates;
 
     private static String firstname;
     private static String lastname;
@@ -59,8 +63,8 @@ public class UpdateBookingE2ETest {
         checkout = "2022-11-10";
         additionalNeeds = "";
 
-        BookingRequestDto booking = new BookingRequestDto();
-        BookingDatesRequestDto bookingDates = new BookingDatesRequestDto();
+        booking = new BookingDto();
+        bookingDates = new BookingDatesDto();
         booking.setFirstname(firstname);
         booking.setLastname(lastname);
         booking.setTotalPrice(totalPrice);
@@ -84,7 +88,7 @@ public class UpdateBookingE2ETest {
         Response getBookingResponse = GetBookingRequest.getBookingRequest(bookingId);
 
         assertThat(getBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-        verifyGetResponseContainsCorrectData(getBookingResponse.jsonPath());
+        verifyResponseContainsCorrectData(getBookingResponse.jsonPath(), booking);
     }
 
     @Order(4)
@@ -131,15 +135,5 @@ public class UpdateBookingE2ETest {
         assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKIN)).isEqualTo(checkin);
         assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKOUT)).isEqualTo(checkout);
         assertThat(jsonPath.getString(BOOKING + ADDITIONAL_NEEDS)).isEqualTo(additionalNeeds);
-    }
-
-    private void verifyGetResponseContainsCorrectData(JsonPath jsonPath) {
-        assertThat(jsonPath.getString(FIRSTNAME)).isEqualTo(firstname);
-        assertThat(jsonPath.getString(LASTNAME)).isEqualTo(lastname);
-        assertThat(jsonPath.getInt(TOTAL_PRICE)).isEqualTo(totalPrice);
-        assertThat(jsonPath.getBoolean(DEPOSIT_PAID)).isEqualTo(depositPaid);
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKIN)).isEqualTo(checkin);
-        assertThat(jsonPath.getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(checkout);
-        assertThat(jsonPath.getString(ADDITIONAL_NEEDS)).isEqualTo(additionalNeeds);
     }
 }

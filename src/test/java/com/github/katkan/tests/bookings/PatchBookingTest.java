@@ -1,7 +1,7 @@
 package com.github.katkan.tests.bookings;
 
-import com.github.katkan.dto.request.BookingDatesRequestDto;
-import com.github.katkan.dto.request.BookingRequestDto;
+import com.github.katkan.dto.request.BookingDatesDto;
+import com.github.katkan.dto.request.BookingDto;
 import com.github.katkan.properties.RestfulBookerProperties;
 import com.github.katkan.requests.auth.CreateTokenRequest;
 import com.github.katkan.requests.bookings.CreateBookingRequest;
@@ -24,8 +24,8 @@ public class PatchBookingTest {
     private static String token;
     private static int bookingId;
 
-    private BookingRequestDto createBookingDto;
-    private BookingRequestDto patchBookingDto;
+    private BookingDto createBookingDto;
+    private BookingDto patchBookingDto;
 
     @BeforeEach
     void auth() {
@@ -35,8 +35,8 @@ public class PatchBookingTest {
         Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);
         token = createTokenResponse.jsonPath().getString("token");
 
-        createBookingDto = new BookingRequestDto();
-        patchBookingDto = new BookingRequestDto();
+        createBookingDto = new BookingDto();
+        patchBookingDto = new BookingDto();
     }
 
     @AfterEach
@@ -116,7 +116,7 @@ public class PatchBookingTest {
         JsonPath jsonPath = createBookingResponse.jsonPath();
         bookingId = getBookingId(jsonPath);
 
-        BookingDatesRequestDto bookingDatesDto = new BookingDatesRequestDto();
+        BookingDatesDto bookingDatesDto = new BookingDatesDto();
         String updatedCheckin = "2022-11-20";
         bookingDatesDto.setCheckin(updatedCheckin);
         patchBookingDto.setBookingDates(bookingDatesDto);
@@ -134,7 +134,7 @@ public class PatchBookingTest {
         JsonPath jsonPath = createBookingResponse.jsonPath();
         bookingId = getBookingId(jsonPath);
 
-        BookingDatesRequestDto bookingDatesDto = new BookingDatesRequestDto();
+        BookingDatesDto bookingDatesDto = new BookingDatesDto();
         String updatedCheckout = "2022-10-31";
         bookingDatesDto.setCheckout(updatedCheckout);
         patchBookingDto.setBookingDates(bookingDatesDto);
@@ -171,7 +171,7 @@ public class PatchBookingTest {
         String updatedFirstname = "Bobby";
         String updatedAdditionalNeeds = "Champaigne in the room";
         patchBookingDto.setFirstname(updatedFirstname);
-        patchBookingDto.setFirstname(updatedAdditionalNeeds);
+        patchBookingDto.setAdditionalNeeds(updatedAdditionalNeeds);
 
         Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
 
