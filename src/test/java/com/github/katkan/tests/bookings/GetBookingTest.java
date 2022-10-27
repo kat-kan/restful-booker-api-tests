@@ -4,7 +4,6 @@ import com.github.katkan.requests.bookings.GetBookingRequest;
 import com.github.katkan.requests.bookings.GetBookingsRequest;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,7 @@ public class GetBookingTest {
     private int getNonExistingId() {
         List<Integer> bookingIds = getBookingIds();
         Collections.sort(bookingIds);
-        return bookingIds.get((bookingIds.size()-1)) + 1;
+        return bookingIds.get((bookingIds.size()-1)) + 100;
     }
 
     private List<Integer> getBookingIds() {

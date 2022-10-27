@@ -2,7 +2,6 @@ package com.github.katkan.tests.e2e;
 
 import com.github.katkan.dto.request.BookingDatesDto;
 import com.github.katkan.dto.request.BookingDto;
-import com.github.katkan.helpers.ValidationHelper;
 import com.github.katkan.properties.RestfulBookerProperties;
 import com.github.katkan.requests.auth.CreateTokenRequest;
 import com.github.katkan.requests.bookings.CreateBookingRequest;
@@ -26,7 +25,6 @@ public class UpdateBookingE2ETest {
     private static String token;
     private static int bookingId;
     private static BookingDto booking;
-    private static BookingDatesDto bookingDates;
 
     private static String firstname;
     private static String lastname;
@@ -64,7 +62,7 @@ public class UpdateBookingE2ETest {
         additionalNeeds = "";
 
         booking = new BookingDto();
-        bookingDates = new BookingDatesDto();
+        BookingDatesDto bookingDates = new BookingDatesDto();
         booking.setFirstname(firstname);
         booking.setLastname(lastname);
         booking.setTotalPrice(totalPrice);

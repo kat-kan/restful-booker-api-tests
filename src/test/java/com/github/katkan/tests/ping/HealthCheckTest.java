@@ -1,5 +1,6 @@
 package com.github.katkan.tests.ping;
 
+import com.github.katkan.requests.BaseRequest;
 import com.github.katkan.url.RestfulBookerUrls;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ public class HealthCheckTest {
     @DisplayName("HealthCheck - verify whether API is up and running")
     void ping() {
         given()
+                .spec(BaseRequest.setUp())
                 .when()
                 .get(RestfulBookerUrls.getHealthCheckUrl())
                 .then()
