@@ -1,7 +1,7 @@
 package com.github.katkan.requests.auth;
 
+import com.github.katkan.requests.BaseRequest;
 import com.github.katkan.url.RestfulBookerUrls;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.JSONObject;
 
@@ -11,7 +11,7 @@ public class CreateTokenRequest {
 
     public static Response createTokenRequest(JSONObject auth) {
         return given()
-                .contentType(ContentType.JSON)
+                .spec(BaseRequest.setUp())
                 .body(auth.toString())
                 .when()
                 .post(RestfulBookerUrls.getAuthUrl())

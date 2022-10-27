@@ -8,11 +8,11 @@ public class RestfulBookerUrls {
     public static final String PING = "ping";
 
     public static String getAuthUrl(){
-        return BASE_URL + AUTH;
+        return AUTH;
     }
 
     public static String getBookingsUrl(){
-        return BASE_URL + BOOKING;
+        return BOOKING;
     }
 
     public static String getBookingUrl(int bookingId){
@@ -20,10 +20,10 @@ public class RestfulBookerUrls {
     }
 
     public static String getHealthCheckUrl(){
-        return BASE_URL + PING;
+        return PING;
     }
 
     public static String createBookingUrl(){
-        return BASE_URL + BOOKING;
+        return BOOKING;
     }
 }
