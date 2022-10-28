@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.github.katkan.helpers.BookingIdsHelper.getBookingId;
 import static com.github.katkan.helpers.JsonHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,8 +25,8 @@ public class PatchBookingTest {
     private static String token;
     private static int bookingId;
 
-    private BookingDto createBookingDto;
-    private BookingDto patchBookingDto;
+    private BookingDto booking;
+    private BookingDto updateBooking;
 
     @BeforeEach
     void auth() {
@@ -33,29 +34,29 @@ public class PatchBookingTest {
         authData.put(USERNAME, RestfulBookerProperties.getUsername());
         authData.put(PASSWORD, RestfulBookerProperties.getPassword());
         Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);
-        token = createTokenResponse.jsonPath().getString("token");
+        token = createTokenResponse.jsonPath().getString(TOKEN);
 
-        createBookingDto = new BookingDto();
-        patchBookingDto = new BookingDto();
+        booking = new BookingDto();
+        updateBooking = new BookingDto();
     }
 
     @AfterEach
     void deleteBooking() {
-        Response response = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
-        assertThat(response.statusCode()).isEqualTo(201);
+        Response deleteBookingResponse = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
+        assertThat(deleteBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
     }
 
     @Test
     @DisplayName("Partially update booking with valid firstname")
-    void partiallyUpdateBookingWithValidFirstname() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+    void partiallyUpdateBookingWithValidFirstnameTest() {
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         String updatedFirstname = "Lila";
-        patchBookingDto.setFirstname(updatedFirstname);
+        updateBooking.setFirstname(updatedFirstname);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getString(FIRSTNAME)).isEqualTo(updatedFirstname);
@@ -63,15 +64,15 @@ public class PatchBookingTest {
 
     @Test
     @DisplayName("Partially update booking with valid lastname")
-    void partiallyUpdateBookingWithValidLastname() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+    void partiallyUpdateBookingWithValidLastnameTest() {
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         String updatedLastname = "Jones";
-        patchBookingDto.setLastname(updatedLastname);
+        updateBooking.setLastname(updatedLastname);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getString(LASTNAME)).isEqualTo(updatedLastname);
@@ -79,15 +80,15 @@ public class PatchBookingTest {
 
     @Test
     @DisplayName("Partially update booking with valid total price")
-    void partiallyUpdateBookingWithValidTotalPriceValue() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+    void partiallyUpdateBookingWithValidTotalPriceValueTest() {
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         int updatedTotalPrice = 2678;
-        patchBookingDto.setTotalPrice(updatedTotalPrice);
+        updateBooking.setTotalPrice(updatedTotalPrice);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getInt(TOTAL_PRICE)).isEqualTo(updatedTotalPrice);
@@ -96,14 +97,14 @@ public class PatchBookingTest {
     @Test
     @DisplayName("Partially update booking with valid deposit paid")
     void partiallyUpdateBookingWithValidDepositPaidValue() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         boolean updatedDepositPaid = false;
-        patchBookingDto.setDepositPaid(updatedDepositPaid);
+        updateBooking.setDepositPaid(updatedDepositPaid);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getBoolean(DEPOSIT_PAID)).isEqualTo(updatedDepositPaid);
@@ -111,17 +112,17 @@ public class PatchBookingTest {
 
     @Test
     @DisplayName("Partially update booking with valid checkin date")
-    void partiallyUpdateBookingWithValidCheckinDate() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+    void partiallyUpdateBookingWithValidCheckinDateTest() {
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         BookingDatesDto bookingDatesDto = new BookingDatesDto();
         String updatedCheckin = "2022-11-20";
         bookingDatesDto.setCheckin(updatedCheckin);
-        patchBookingDto.setBookingDates(bookingDatesDto);
+        updateBooking.setBookingDates(bookingDatesDto);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getString(BOOKING_DATES + "." + CHECKIN)).isEqualTo(updatedCheckin);
@@ -129,17 +130,17 @@ public class PatchBookingTest {
 
     @Test
     @DisplayName("Partially update booking with valid checkout date")
-    void partiallyUpdateBookingWithValidCheckoutDate() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+    void partiallyUpdateBookingWithValidCheckoutDateTest() {
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         BookingDatesDto bookingDatesDto = new BookingDatesDto();
         String updatedCheckout = "2022-10-31";
         bookingDatesDto.setCheckout(updatedCheckout);
-        patchBookingDto.setBookingDates(bookingDatesDto);
+        updateBooking.setBookingDates(bookingDatesDto);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getString(BOOKING_DATES + "." + CHECKOUT)).isEqualTo(updatedCheckout);
@@ -147,15 +148,15 @@ public class PatchBookingTest {
 
     @Test
     @DisplayName("Partially update booking with valid additional needs")
-    void partiallyUpdateBookingWithValidAdditionalNeeds() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+    void partiallyUpdateBookingWithValidAdditionalNeedsTest() {
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         String updatedAdditionalNeeds = "Breakfast in the hotel room";
-        patchBookingDto.setAdditionalNeeds(updatedAdditionalNeeds);
+        updateBooking.setAdditionalNeeds(updatedAdditionalNeeds);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getString(ADDITIONAL_NEEDS)).isEqualTo(updatedAdditionalNeeds);
@@ -163,17 +164,17 @@ public class PatchBookingTest {
 
     @Test
     @DisplayName("Partially update booking with two valid fields - firstname and additional needs")
-    void partiallyUpdateBookingWithTwoValidFields() {
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+    void partiallyUpdateBookingWithTwoValidFieldsTest() {
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
         String updatedFirstname = "Bobby";
-        String updatedAdditionalNeeds = "Champaigne in the room";
-        patchBookingDto.setFirstname(updatedFirstname);
-        patchBookingDto.setAdditionalNeeds(updatedAdditionalNeeds);
+        String updatedAdditionalNeeds = "Champagne in the room";
+        updateBooking.setFirstname(updatedFirstname);
+        updateBooking.setAdditionalNeeds(updatedAdditionalNeeds);
 
-        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(patchBookingDto, bookingId, token);
+        Response patchBookingResponse = PatchBookingRequest.patchBookingRequest(updateBooking, bookingId, token);
 
         assertThat(patchBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(patchBookingResponse.jsonPath().getString(FIRSTNAME)).isEqualTo(updatedFirstname);

@@ -9,8 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.github.katkan.helpers.JsonHelper.PASSWORD;
-import static com.github.katkan.helpers.JsonHelper.USERNAME;
+import static com.github.katkan.helpers.JsonHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreateTokenTest {
@@ -23,18 +22,18 @@ public class CreateTokenTest {
 
     @Test
     @DisplayName("Create token with valid username and password")
-    void createTokenWithValidUsernameAndPassword() {
+    void createTokenWithValidUsernameAndPasswordTest() {
         authData.put(USERNAME, RestfulBookerProperties.getUsername());
         authData.put(PASSWORD, RestfulBookerProperties.getPassword());
         Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);
 
         assertThat(createTokenResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
-        assertThat(createTokenResponse.jsonPath().getString("token")).isNotEmpty();
+        assertThat(createTokenResponse.jsonPath().getString(TOKEN)).isNotEmpty();
     }
 
     @Test
     @DisplayName("Create token with invalid username and password")
-    void createTokenWithInvalidUsernameAndPassword() {
+    void createTokenWithInvalidUsernameAndPasswordTest() {
         authData.put(USERNAME, "user");
         authData.put(PASSWORD, "123123");
         Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);

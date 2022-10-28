@@ -6,8 +6,6 @@ import com.github.katkan.requests.auth.CreateTokenRequest;
 import com.github.katkan.requests.bookings.CreateBookingRequest;
 import com.github.katkan.requests.bookings.DeleteBookingRequest;
 import com.github.katkan.requests.bookings.GetBookingRequest;
-import com.github.katkan.requests.bookings.GetBookingsRequest;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
@@ -16,9 +14,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.List;
-
+import static com.github.katkan.helpers.BookingIdsHelper.getBookingId;
+import static com.github.katkan.helpers.BookingIdsHelper.getNonExistingId;
 import static com.github.katkan.helpers.JsonHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +28,7 @@ public class DeleteBookingTest {
         authData.put(USERNAME, RestfulBookerProperties.getUsername());
         authData.put(PASSWORD, RestfulBookerProperties.getPassword());
         Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);
-        token = createTokenResponse.jsonPath().getString("token");
+        token = createTokenResponse.jsonPath().getString(TOKEN);
     }
 
     @Test
@@ -39,7 +36,7 @@ public class DeleteBookingTest {
     void deleteExistingBookingTest() {
         BookingDto booking = new BookingDto();
         Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-        int bookingId = Integer.parseInt(createBookingResponse.jsonPath().getString(ID));
+        int bookingId = getBookingId(createBookingResponse.jsonPath());
 
         Response deleteBookingResponse = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
         assertThat(deleteBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
@@ -56,17 +53,5 @@ public class DeleteBookingTest {
 
         Response deleteBookingResponse = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
         assertThat(deleteBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
-    }
-
-    private int getNonExistingId() {
-        List<Integer> bookingIds = getBookingIds();
-        Collections.sort(bookingIds);
-        return bookingIds.get((bookingIds.size()-1)) + 1;
-    }
-
-    private List<Integer> getBookingIds() {
-        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequest();
-        JsonPath jsonPath = getBookingIdsResponse.jsonPath();
-        return jsonPath.getList(ID);
     }
 }

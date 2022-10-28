@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.github.katkan.helpers.BookingIdsHelper.getBookingId;
 import static com.github.katkan.helpers.JsonHelper.*;
 import static com.github.katkan.helpers.ValidationHelper.verifyResponseContainsCorrectData;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +26,7 @@ public class PutBookingTest {
     private static String token;
     private static int bookingId;
 
-    private BookingDto createBookingDto;
+    private BookingDto booking;
 
     @BeforeEach
     void setUp() {
@@ -33,20 +34,20 @@ public class PutBookingTest {
         authData.put(USERNAME, RestfulBookerProperties.getUsername());
         authData.put(PASSWORD, RestfulBookerProperties.getPassword());
         Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);
-        token = createTokenResponse.jsonPath().getString("token");
+        token = createTokenResponse.jsonPath().getString(TOKEN);
 
-        createBookingDto = new BookingDto();
+        booking = new BookingDto();
     }
 
     @AfterEach
     void deleteBooking() {
-        Response response = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
+        Response deleteBookingResponse = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
+        assertThat(deleteBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
     }
 
     @Test
-    @DisplayName("Modify booking with PUT method using valid data")
-    void modifyBookingWithPUTUsingValidDataTest() {
+    @DisplayName("Update booking using valid data")
+    void updateBookingUsingValidDataTest() {
         String updatedFirstname = "Oliver";
         String updatedLastname = "Booker";
         int updatedTotalPrice = 200;
@@ -55,30 +56,30 @@ public class PutBookingTest {
         String updatedCheckout = "2023-11-01";
         String updatedAdditionalNeeds = "Breakfast";
 
-        BookingDatesDto putBookingDatesDto = new BookingDatesDto();
-        BookingDto putBookingDto  = new BookingDto();
+        BookingDatesDto updateBookingDates = new BookingDatesDto();
+        BookingDto updateBooking = new BookingDto();
 
-        putBookingDatesDto.setCheckin(updatedCheckin);
-        putBookingDatesDto.setCheckout(updatedCheckout);
-        putBookingDto.setFirstname(updatedFirstname);
-        putBookingDto.setLastname(updatedLastname);
-        putBookingDto.setTotalPrice(updatedTotalPrice);
-        putBookingDto.setDepositPaid(updatedDepositPaid);
-        putBookingDto.setBookingDates(putBookingDatesDto);
-        putBookingDto.setAdditionalNeeds(updatedAdditionalNeeds);
+        updateBookingDates.setCheckin(updatedCheckin);
+        updateBookingDates.setCheckout(updatedCheckout);
+        updateBooking.setFirstname(updatedFirstname);
+        updateBooking.setLastname(updatedLastname);
+        updateBooking.setTotalPrice(updatedTotalPrice);
+        updateBooking.setDepositPaid(updatedDepositPaid);
+        updateBooking.setBookingDates(updateBookingDates);
+        updateBooking.setAdditionalNeeds(updatedAdditionalNeeds);
 
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
-        Response putBookingResponse = PutBookingRequest.putBookingRequest(putBookingDto, bookingId, token);
+        Response putBookingResponse = PutBookingRequest.putBookingRequest(updateBooking, bookingId, token);
         assertThat(putBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
-        verifyResponseContainsCorrectData(putBookingResponse.jsonPath(), putBookingDto);
+        verifyResponseContainsCorrectData(putBookingResponse.jsonPath(), updateBooking);
     }
 
     @Test
-    @DisplayName("Modify booking with PUT method using invalid dates data")
-    void modifyBookingWithPUTUsingInvalidDataTest() {
+    @DisplayName("Update booking using invalid dates data")
+    void updateBookingUsingInvalidDataTest() {
         String updatedFirstname = "Oliver";
         String updatedLastname = "Booker";
         int updatedTotalPrice = 200;
@@ -87,23 +88,23 @@ public class PutBookingTest {
         String updatedCheckout = "2023-1101";
         String updatedAdditionalNeeds = "Breakfast";
 
-        BookingDatesDto putBookingDatesDto = new BookingDatesDto();
-        BookingDto putBookingDto  = new BookingDto();
+        BookingDatesDto updateBookingDates = new BookingDatesDto();
+        BookingDto updateBooking = new BookingDto();
 
-        putBookingDatesDto.setCheckin(updatedCheckin);
-        putBookingDatesDto.setCheckout(updatedCheckout);
-        putBookingDto.setFirstname(updatedFirstname);
-        putBookingDto.setLastname(updatedLastname);
-        putBookingDto.setTotalPrice(updatedTotalPrice);
-        putBookingDto.setDepositPaid(updatedDepositPaid);
-        putBookingDto.setBookingDates(putBookingDatesDto);
-        putBookingDto.setAdditionalNeeds(updatedAdditionalNeeds);
+        updateBookingDates.setCheckin(updatedCheckin);
+        updateBookingDates.setCheckout(updatedCheckout);
+        updateBooking.setFirstname(updatedFirstname);
+        updateBooking.setLastname(updatedLastname);
+        updateBooking.setTotalPrice(updatedTotalPrice);
+        updateBooking.setDepositPaid(updatedDepositPaid);
+        updateBooking.setBookingDates(updateBookingDates);
+        updateBooking.setAdditionalNeeds(updatedAdditionalNeeds);
 
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(createBookingDto);
-        JsonPath jsonPath = createBookingResponse.jsonPath();
-        bookingId = getBookingId(jsonPath);
+        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
+        JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+        bookingId = getBookingId(createBookingJsonPath);
 
-        Response putBookingResponse = PutBookingRequest.putBookingRequest(putBookingDto, bookingId, token);
+        Response putBookingResponse = PutBookingRequest.putBookingRequest(updateBooking, bookingId, token);
         assertThat(putBookingResponse.htmlPath().getString("body")).isEqualTo("Invalid date");
     }
 }

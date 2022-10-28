@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
+import static com.github.katkan.helpers.BookingIdsHelper.getBookingId;
 import static com.github.katkan.helpers.JsonHelper.*;
 import static com.github.katkan.helpers.ValidationHelper.verifyCreateResponseContainsCorrectData;
 import static com.github.katkan.helpers.ValidationHelper.verifyResponseContainsCorrectData;
@@ -52,13 +53,13 @@ public class CreateBookingTest {
             authData.put(USERNAME, RestfulBookerProperties.getUsername());
             authData.put(PASSWORD, RestfulBookerProperties.getPassword());
             Response createTokenResponse = CreateTokenRequest.createTokenRequest(authData);
-            token = createTokenResponse.jsonPath().getString("token");
+            token = createTokenResponse.jsonPath().getString(TOKEN);
         }
 
         @AfterEach
         void deleteBooking() {
             Response response = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
-            assertThat(response.statusCode()).isEqualTo(201);
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
         }
 
         @Test
@@ -67,13 +68,13 @@ public class CreateBookingTest {
             BookingDto booking = new BookingDto();
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-            JsonPath jsonPath = createBookingResponse.jsonPath();
-            bookingId = getBookingId(jsonPath);
+            JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+            bookingId = getBookingId(createBookingJsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath, booking);
+            verifyCreateResponseContainsCorrectData(createBookingJsonPath, booking);
 
-            JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
+            JsonPath getBooking = getBookingById(bookingId);
             verifyResponseContainsCorrectData(getBooking, booking);
         }
 
@@ -85,13 +86,13 @@ public class CreateBookingTest {
             booking.setFirstname(firstname);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-            JsonPath jsonPath = createBookingResponse.jsonPath();
-            bookingId = getBookingId(jsonPath);
+            JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+            bookingId = getBookingId(createBookingJsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath, booking);
+            verifyCreateResponseContainsCorrectData(createBookingJsonPath, booking);
 
-            JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
+            JsonPath getBooking = getBookingById(bookingId);
             verifyResponseContainsCorrectData(getBooking,booking);
         }
 
@@ -103,13 +104,13 @@ public class CreateBookingTest {
             booking.setFirstname(lastname);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-            JsonPath jsonPath = createBookingResponse.jsonPath();
-            bookingId = getBookingId(jsonPath);
+            JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+            bookingId = getBookingId(createBookingJsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath, booking);
+            verifyCreateResponseContainsCorrectData(createBookingJsonPath, booking);
 
-            JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
+            JsonPath getBooking = getBookingById(bookingId);
             verifyResponseContainsCorrectData(getBooking, booking);
         }
 
@@ -121,13 +122,13 @@ public class CreateBookingTest {
             booking.setTotalPrice(totalPrice);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-            JsonPath jsonPath = createBookingResponse.jsonPath();
-            bookingId = getBookingId(jsonPath);
+            JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+            bookingId = getBookingId(createBookingJsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath, booking);
+            verifyCreateResponseContainsCorrectData(createBookingJsonPath, booking);
 
-            JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
+            JsonPath getBooking = getBookingById(bookingId);
             verifyResponseContainsCorrectData(getBooking, booking);
         }
 
@@ -138,13 +139,13 @@ public class CreateBookingTest {
             booking.setDepositPaid(false);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-            JsonPath jsonPath = createBookingResponse.jsonPath();
-            bookingId = getBookingId(jsonPath);
+            JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+            bookingId = getBookingId(createBookingJsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath, booking);
+            verifyCreateResponseContainsCorrectData(createBookingJsonPath, booking);
 
-            JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
+            JsonPath getBooking = getBookingById(bookingId);
             verifyResponseContainsCorrectData(getBooking, booking);
         }
 
@@ -158,13 +159,13 @@ public class CreateBookingTest {
             booking.setBookingDates(bookingDates);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-            JsonPath jsonPath = createBookingResponse.jsonPath();
-            bookingId = getBookingId(jsonPath);
+            JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+            bookingId = getBookingId(createBookingJsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath, booking);
+            verifyCreateResponseContainsCorrectData(createBookingJsonPath, booking);
 
-            JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
+            JsonPath getBooking = getBookingById(bookingId);
             verifyResponseContainsCorrectData(getBooking, booking);
         }
 
@@ -179,13 +180,13 @@ public class CreateBookingTest {
             booking.setAdditionalNeeds(additionalNeeds);
 
             Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-            JsonPath jsonPath = createBookingResponse.jsonPath();
-            bookingId = getBookingId(jsonPath);
+            JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
+            bookingId = getBookingId(createBookingJsonPath);
 
             assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-            verifyCreateResponseContainsCorrectData(jsonPath, booking);
+            verifyCreateResponseContainsCorrectData(createBookingJsonPath, booking);
 
-            JsonPath getBooking = getCreatedBookingJsonPath(jsonPath);
+            JsonPath getBooking = getBookingById(bookingId);
             verifyResponseContainsCorrectData(getBooking, booking);
         }
 
@@ -198,9 +199,8 @@ public class CreateBookingTest {
         }
     }
 
-    private JsonPath getCreatedBookingJsonPath(JsonPath jsonPath) {
-        int bookingId = getBookingId(jsonPath);
-        Response getCreatedBookingResponse = GetBookingRequest.getBookingRequest(bookingId);
-        return getCreatedBookingResponse.jsonPath();
+    private JsonPath getBookingById(int bookingId) {
+        Response getBookingResponse = GetBookingRequest.getBookingRequest(bookingId);
+        return getBookingResponse.jsonPath();
     }
 }

@@ -8,14 +8,15 @@ import com.github.katkan.requests.bookings.CreateBookingRequest;
 import com.github.katkan.requests.bookings.DeleteBookingRequest;
 import com.github.katkan.requests.bookings.GetBookingRequest;
 import com.github.katkan.requests.bookings.PatchBookingRequest;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 
+import static com.github.katkan.helpers.BookingIdsHelper.getBookingId;
 import static com.github.katkan.helpers.JsonHelper.*;
+import static com.github.katkan.helpers.ValidationHelper.verifyCreateResponseContainsCorrectData;
 import static com.github.katkan.helpers.ValidationHelper.verifyResponseContainsCorrectData;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,18 +27,10 @@ public class UpdateBookingE2ETest {
     private static int bookingId;
     private static BookingDto booking;
 
-    private static String firstname;
-    private static String lastname;
-    private static int totalPrice;
-    private static boolean depositPaid;
-    private static String checkin;
-    private static String checkout;
-    private static String additionalNeeds;
-
     @Order(1)
     @Test
     @DisplayName("Create token and authenticate")
-    void createTokenTest() {
+    void createToken() {
         JSONObject authData = new JSONObject();
         authData.put(USERNAME, RestfulBookerProperties.getUsername());
         authData.put(PASSWORD, RestfulBookerProperties.getPassword());
@@ -46,20 +39,19 @@ public class UpdateBookingE2ETest {
 
         assertThat(createTokenResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         token = createTokenResponse.jsonPath().getString(TOKEN);
-        log.info("Auth token created");
     }
 
     @Order(2)
     @Test
     @DisplayName("Create booking with data from the customer")
-    void createBookingTest() {
-        firstname = "Anne";
-        lastname = "Green";
-        totalPrice = 100;
-        depositPaid = false;
-        checkin = "2022-11-01";
-        checkout = "2022-11-10";
-        additionalNeeds = "";
+    void createBooking() {
+        String firstname = "Anne";
+        String lastname = "Green";
+        int totalPrice = 100;
+        boolean depositPaid = false;
+        String checkin = "2022-11-01";
+        String checkout = "2022-11-10";
+        String additionalNeeds = "";
 
         booking = new BookingDto();
         BookingDatesDto bookingDates = new BookingDatesDto();
@@ -76,13 +68,13 @@ public class UpdateBookingE2ETest {
         bookingId = getBookingId(createBookingResponse.jsonPath());
 
         assertThat(createBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
-        verifyCreateResponseContainsCorrectData(createBookingResponse.jsonPath());
+        verifyCreateResponseContainsCorrectData(createBookingResponse.jsonPath(), booking);
     }
 
     @Order(3)
     @Test
     @DisplayName("Read created booking")
-    void getBookingTest() {
+    void getBooking() {
         Response getBookingResponse = GetBookingRequest.getBookingRequest(bookingId);
 
         assertThat(getBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
@@ -120,18 +112,8 @@ public class UpdateBookingE2ETest {
     @Order(6)
     @Test
     @DisplayName("Delete booking after it's finished")
-    void deleteBookingTest() {
-        Response response = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
-    }
-
-    private void verifyCreateResponseContainsCorrectData(JsonPath jsonPath) {
-        assertThat(jsonPath.getString(BOOKING + FIRSTNAME)).isEqualTo(firstname);
-        assertThat(jsonPath.getString(BOOKING + LASTNAME)).isEqualTo(lastname);
-        assertThat(jsonPath.getInt(BOOKING + TOTAL_PRICE)).isEqualTo(totalPrice);
-        assertThat(jsonPath.getBoolean(BOOKING + DEPOSIT_PAID)).isEqualTo(depositPaid);
-        assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKIN)).isEqualTo(checkin);
-        assertThat(jsonPath.getString(BOOKING_BOOKING_DATES + CHECKOUT)).isEqualTo(checkout);
-        assertThat(jsonPath.getString(BOOKING + ADDITIONAL_NEEDS)).isEqualTo(additionalNeeds);
+    void deleteBooking() {
+        Response deleteBookingResponse = DeleteBookingRequest.deleteBookingRequest(bookingId, token);
+        assertThat(deleteBookingResponse.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
     }
 }

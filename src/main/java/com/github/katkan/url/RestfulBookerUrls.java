@@ -1,5 +1,9 @@
 package com.github.katkan.url;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RestfulBookerUrls {
 
     public static final String BASE_URL = "https://restful-booker.herokuapp.com/";
