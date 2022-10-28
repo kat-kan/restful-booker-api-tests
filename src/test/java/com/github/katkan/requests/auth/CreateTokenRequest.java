@@ -9,10 +9,10 @@ import static io.restassured.RestAssured.given;
 
 public class CreateTokenRequest {
 
-    public static Response createTokenRequest(JSONObject auth) {
+    public static Response createTokenRequest(JSONObject authData) {
         return given()
                 .spec(BaseRequest.setUp())
-                .body(auth.toString())
+                .body(authData.toString())
                 .when()
                 .post(RestfulBookerUrls.getAuthUrl())
                 .then()

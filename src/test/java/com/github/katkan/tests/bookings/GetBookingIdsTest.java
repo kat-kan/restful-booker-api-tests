@@ -34,12 +34,12 @@ public class GetBookingIdsTest {
     @Test
     @DisplayName("Get ids for all bookings that exist")
     void getBookingIdsTest() {
-        Response response = GetBookingsRequest.getBookingRequest();
+        Response getBookingsResponse = GetBookingsRequest.getBookingRequest();
 
-        JsonPath jsonPath = response.jsonPath();
-        List<Integer> bookingIds = jsonPath.getList(ID);
+        JsonPath getBookingsJsonPath = getBookingsResponse.jsonPath();
+        List<Integer> bookingIds = getBookingsJsonPath.getList(ID);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(getBookingsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
 
         int bookingIdsSize = bookingIds.size();
@@ -59,8 +59,8 @@ public class GetBookingIdsTest {
 
         Response getBookingIdsByFirstnameResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
-        JsonPath getIdsByNameJsonPath = getBookingIdsByFirstnameResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByNameJsonPath.getList(ID);
+        JsonPath bookingIdsJsonPath = getBookingIdsByFirstnameResponse.jsonPath();
+        List<Integer> bookingIds = bookingIdsJsonPath.getList(ID);
 
         assertThat(getBookingIdsByFirstnameResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
@@ -99,12 +99,12 @@ public class GetBookingIdsTest {
     void getBookingIdsByCheckinTest(String checkin) {
         queryParams.put(CHECKIN, checkin);
 
-        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
+        Response getBookingIdsByCheckinResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
-        JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByNameJsonPath.getList(ID);
+        JsonPath bookingIdsJsonPath = getBookingIdsByCheckinResponse.jsonPath();
+        List<Integer> bookingIds = bookingIdsJsonPath.getList(ID);
 
-        assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(getBookingIdsByCheckinResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
 
         int bookingIdsSize = bookingIds.size();
@@ -121,12 +121,12 @@ public class GetBookingIdsTest {
     void getBookingIdsByCheckoutTest(String checkout) {
         queryParams.put(CHECKOUT, checkout);
 
-        Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
+        Response getBookingIdsByCheckoutResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
-        JsonPath getIdsByNameJsonPath = getBookingIdsResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByNameJsonPath.getList(ID);
+        JsonPath bookingIdsJsonPath = getBookingIdsByCheckoutResponse.jsonPath();
+        List<Integer> bookingIds = bookingIdsJsonPath.getList(ID);
 
-        assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(getBookingIdsByCheckoutResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
 
         int bookingIdsSize = bookingIds.size();
@@ -139,11 +139,11 @@ public class GetBookingIdsTest {
     @ParameterizedTest
     @MethodSource("provideQueryParamsData")
     @DisplayName("Get booking ids based on the combinations of query params: firstname, lastname, checkin date")
-    void getBookingIdsByFirstnameAndLastnameTest(Map<String, String> queryParams) {
+    void getBookingIdsByDifferentQueryParamsTest(Map<String, String> queryParams) {
         Response getBookingIdsResponse = GetBookingsRequest.getBookingRequestWithQueryParams(queryParams);
 
-        JsonPath getIdsByQueryParamsJsonPath = getBookingIdsResponse.jsonPath();
-        List<Integer> bookingIds = getIdsByQueryParamsJsonPath.getList(ID);
+        JsonPath bookingIdsJsonPath = getBookingIdsResponse.jsonPath();
+        List<Integer> bookingIds = bookingIdsJsonPath.getList(ID);
 
         assertThat(getBookingIdsResponse.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(bookingIds).isNotEmpty();
@@ -158,18 +158,12 @@ public class GetBookingIdsTest {
         JsonPath bookingJsonPath = getRandomBooking(bookingIds);
         queryParams.forEach((param, value) -> {
                     if (param.equals(CHECKIN)) {
-                        assertThat(bookingJsonPath.getString("bookingdates." + CHECKIN)).isGreaterThanOrEqualTo(value);
+                        assertThat(bookingJsonPath.getString(BOOKING_DATES + "." + CHECKIN)).isGreaterThanOrEqualTo(value);
                     } else {
                         assertThat(bookingJsonPath.getString(param)).isEqualTo(value);
                     }
                 }
         );
-    }
-
-    private JsonPath getRandomBooking(List<Integer> bookingIds) {
-        Collections.shuffle(bookingIds);
-        Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
-        return getBookingById.jsonPath();
     }
 
     private static Stream<Arguments> provideQueryParamsData() {
@@ -179,5 +173,11 @@ public class GetBookingIdsTest {
                 Arguments.of(Map.of(LASTNAME, "Dominguez", CHECKIN, "2015-10-01")),
                 Arguments.of(Map.of(FIRSTNAME, "Sally", LASTNAME, "Brown", CHECKIN, "2010-12-01"))
         );
+    }
+
+    private JsonPath getRandomBooking(List<Integer> bookingIds) {
+        Collections.shuffle(bookingIds);
+        Response getBookingById = GetBookingRequest.getBookingRequest(bookingIds.get(0));
+        return getBookingById.jsonPath();
     }
 }

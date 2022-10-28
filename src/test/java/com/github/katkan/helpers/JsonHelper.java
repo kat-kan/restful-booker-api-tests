@@ -18,8 +18,8 @@ public class JsonHelper {
     public static final String BOOKING_DATES = "bookingdates";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    public static final String ID = "bookingid";
 
+    public static final String ID = "bookingid";
     public static final String BOOKING = "booking.";
     public static final String BOOKING_BOOKING_DATES = "booking.bookingdates.";
 
@@ -27,8 +27,4 @@ public class JsonHelper {
 
     public static final List<String> jsonKeys = List.of(FIRSTNAME, LASTNAME,
             TOTAL_PRICE, DEPOSIT_PAID, BOOKING_DATES + "." + CHECKIN, BOOKING_DATES + "." + CHECKOUT, ADDITIONAL_NEEDS);
-
-    public static int getBookingId(JsonPath jsonPath) {
-        return Integer.parseInt(jsonPath.getString(ID));
-    }
 }

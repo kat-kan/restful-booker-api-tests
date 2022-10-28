@@ -12,7 +12,7 @@ public class HealthCheckTest {
 
     @Test
     @DisplayName("HealthCheck - verify whether API is up and running")
-    void ping() {
+    void pingTest() {
         given()
                 .spec(BaseRequest.setUp())
                 .when()

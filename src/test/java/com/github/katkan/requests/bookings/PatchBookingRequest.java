@@ -10,11 +10,11 @@ import static io.restassured.RestAssured.given;
 
 public class PatchBookingRequest {
 
-    public static Response patchBookingRequest(BookingDto booking, int bookingId, String token){
+    public static Response patchBookingRequest(BookingDto bookingDto, int bookingId, String token){
         return given()
                 .spec(BaseRequest.setUp())
                 .header("Cookie", "token=" + token)
-                .body(booking)
+                .body(bookingDto)
                 .when()
                 .patch(RestfulBookerUrls.getBookingUrl(bookingId))
                 .then()
