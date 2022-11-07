@@ -114,11 +114,9 @@
                 <version>${allure-maven-plugin-version}</version>
                 <configuration>
                     <reportVersion>2.19.0</reportVersion>
-                    <outputDirectory>${basedir}/allure-reports/</outputDirectory>
-                    <resultsDirectory>${basedir}/allure-results/</resultsDirectory>
+                    <reportDirectory>${basedir}/target/allure-report</reportDirectory>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>
