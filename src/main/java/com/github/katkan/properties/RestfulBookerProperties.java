@@ -1,7 +1,11 @@
 package com.github.katkan.properties;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.ResourceBundle;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RestfulBookerProperties {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
