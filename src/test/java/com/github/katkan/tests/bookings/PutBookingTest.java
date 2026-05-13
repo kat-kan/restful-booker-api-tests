@@ -78,33 +78,15 @@ public class PutBookingTest {
     }
 
     @Test
-    @DisplayName("Update booking using invalid dates data")
-    void updateBookingUsingInvalidDataTest() {
-        String updatedFirstname = "Oliver";
-        String updatedLastname = "Booker";
-        int updatedTotalPrice = 200;
-        boolean updatedDepositPaid = false;
-        String updatedCheckin = "20231010";
-        String updatedCheckout = "2023-1101";
-        String updatedAdditionalNeeds = "Breakfast";
-
-        BookingDatesDto updateBookingDates = new BookingDatesDto();
-        BookingDto updateBooking = new BookingDto();
-
-        updateBookingDates.setCheckin(updatedCheckin);
-        updateBookingDates.setCheckout(updatedCheckout);
-        updateBooking.setFirstname(updatedFirstname);
-        updateBooking.setLastname(updatedLastname);
-        updateBooking.setTotalPrice(updatedTotalPrice);
-        updateBooking.setDepositPaid(updatedDepositPaid);
-        updateBooking.setBookingDates(updateBookingDates);
-        updateBooking.setAdditionalNeeds(updatedAdditionalNeeds);
-
+    @DisplayName("Update booking returns 400 when request body is not valid JSON")
+    void updateBookingWithMalformedJsonBodyReturnsBadRequestTest() {
         Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
         JsonPath createBookingJsonPath = createBookingResponse.jsonPath();
         bookingId = getBookingId(createBookingJsonPath);
 
-        Response putBookingResponse = PutBookingRequest.putBookingRequest(updateBooking, bookingId, token);
-        assertThat(putBookingResponse.htmlPath().getString("body")).isEqualTo("Invalid date");
+        Response putBookingResponse =
+                PutBookingRequest.putBookingRequestRawBody("not json", bookingId, token);
+
+        assertThat(putBookingResponse.getStatusCode()).isEqualTo(HttpStatus.SC_BAD_REQUEST);
     }
 }

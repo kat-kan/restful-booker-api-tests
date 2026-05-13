@@ -1,6 +1,5 @@
 package com.github.katkan.helpers;
 
-import io.restassured.path.json.JsonPath;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

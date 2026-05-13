@@ -55,7 +55,7 @@ As mentioned, Restful Booker API has some bugs for the fun of its testers. Here 
 
 `https://restful-booker.herokuapp.com/booking` - Create Booking
 * Total price value cannot be a floating number; precision is lost during saving.
-* Checkin and checkout dates are validated and booking is not created, but 200 OK status code is returned; 400 Bad Request would be better
+* Checkin and checkout dates sent in format other than YYYY-MM-DD are created with 200 OK, but value of the field is set to `0NaN-aN-aN`. As a result, data is lost and the user is not even informed about this issue.
 
 `https://restful-booker.herokuapp.com/booking/1` - Delete Booking
 * Auth can be set only via Cookie header, doesn't work with Authorization header (returns 403 Forbidden)

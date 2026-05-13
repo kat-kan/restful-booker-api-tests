@@ -20,4 +20,17 @@ public class PutBookingRequest {
                 .extract()
                 .response();
     }
+
+    /** Sends the body string as-is (for negative tests such as malformed JSON). */
+    public static Response putBookingRequestRawBody(String rawBody, int bookingId, String token) {
+        return given()
+                .spec(BaseRequest.setUp())
+                .header("Cookie", "token=" + token)
+                .body(rawBody)
+                .when()
+                .put(RestfulBookerUrls.getBookingUrl(bookingId))
+                .then()
+                .extract()
+                .response();
+    }
 }

@@ -19,4 +19,16 @@ public class CreateBookingRequest {
                 .extract()
                 .response();
     }
+
+    /** Sends the body string as-is (for negative tests such as malformed JSON). */
+    public static Response createBookingRequestRawBody(String rawBody) {
+        return given()
+                .spec(BaseRequest.setUp())
+                .body(rawBody)
+                .when()
+                .post(RestfulBookerUrls.createBookingUrl())
+                .then()
+                .extract()
+                .response();
+    }
 }

@@ -11,7 +11,11 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,7 +24,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.stream.Stream;
 
 import static com.github.katkan.helpers.BookingIdsHelper.getBookingId;
-import static com.github.katkan.helpers.JsonHelper.*;
+import static com.github.katkan.helpers.JsonHelper.PASSWORD;
+import static com.github.katkan.helpers.JsonHelper.TOKEN;
+import static com.github.katkan.helpers.JsonHelper.USERNAME;
 import static com.github.katkan.helpers.ValidationHelper.verifyCreateResponseContainsCorrectData;
 import static com.github.katkan.helpers.ValidationHelper.verifyResponseContainsCorrectData;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,17 +34,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CreateBookingTest {
 
     @Test
-    @DisplayName("Create booking with invalid dates (the only validation implemented)")
-    void createBookingWithInvalidDatesTest() {
-        BookingDto booking = new BookingDto();
-        BookingDatesDto bookingDates = new BookingDatesDto();
-        bookingDates.setCheckin("20221012");
-        bookingDates.setCheckout("202210-12");
-        booking.setBookingDates(bookingDates);
+    @DisplayName("Create booking returns 400 when request body is not valid JSON")
+    void createBookingWithMalformedJsonBodyReturnsBadRequestTest() {
+        Response response = CreateBookingRequest.createBookingRequestRawBody("not json");
 
-        Response createBookingResponse = CreateBookingRequest.createBookingRequest(booking);
-
-        assertThat(createBookingResponse.htmlPath().getString("body")).isEqualTo("Invalid date");
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_BAD_REQUEST);
     }
 
     @Nested
